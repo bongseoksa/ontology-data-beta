@@ -1,0 +1,12 @@
+{"type":"adjustment_factor","category":"규모보정","categoryCode":"SIZE_ADJUSTMENT","fpRange":{"min":0,"max":300},"factor":1.28,"description":"소규모 프로젝트 (300FP 이하)","year":2026,"source":"SW사업 대가산정 가이드"}
+{"type":"adjustment_factor","category":"규모보정","categoryCode":"SIZE_ADJUSTMENT","fpRange":{"min":300,"max":500},"factor":1.15,"description":"소규모 프로젝트 (300~500FP)","year":2026,"source":"SW사업 대가산정 가이드"}
+{"type":"adjustment_factor","category":"규모보정","categoryCode":"SIZE_ADJUSTMENT","fpRange":{"min":500,"max":1000},"factor":1.0,"description":"중규모 프로젝트 (500~1000FP)","year":2026,"source":"SW사업 대가산정 가이드"}
+{"type":"adjustment_factor","category":"규모보정","categoryCode":"SIZE_ADJUSTMENT","fpRange":{"min":1000,"max":2000},"factor":0.85,"description":"중대규모 프로젝트 (1000~2000FP)","year":2026,"source":"SW사업 대가산정 가이드"}
+{"type":"adjustment_factor","category":"규모보정","categoryCode":"SIZE_ADJUSTMENT","fpRange":{"min":2000,"max":null},"factor":0.65,"description":"대규모 프로젝트 (2000FP 초과)","year":2026,"source":"SW사업 대가산정 가이드"}
+{"type":"adjustment_factor","category":"애플리케이션복잡도","categoryCode":"APP_COMPLEXITY","level":"LOW","factor":0.9,"description":"단순 애플리케이션","year":2026,"source":"SW사업 대가산정 가이드"}
+{"type":"adjustment_factor","category":"애플리케이션복잡도","categoryCode":"APP_COMPLEXITY","level":"MEDIUM","factor":1.0,"description":"일반 애플리케이션","year":2026,"source":"SW사업 대가산정 가이드"}
+{"type":"adjustment_factor","category":"애플리케이션복잡도","categoryCode":"APP_COMPLEXITY","level":"HIGH","factor":1.1,"description":"복잡한 애플리케이션","year":2026,"source":"SW사업 대가산정 가이드"}
+{"type":"adjustment_factor","category":"언어보정","categoryCode":"LANGUAGE_ADJUSTMENT","language":"Java","factor":1.0,"description":"Java 개발","year":2026,"source":"SW사업 대가산정 가이드"}
+{"type":"adjustment_factor","category":"언어보정","categoryCode":"LANGUAGE_ADJUSTMENT","language":"Python","factor":0.95,"description":"Python 개발","year":2026,"source":"SW사업 대가산정 가이드"}
+{"type":"adjustment_factor","category":"언어보정","categoryCode":"LANGUAGE_ADJUSTMENT","language":"C/C++","factor":1.1,"description":"C/C++ 개발","year":2026,"source":"SW사업 대가산정 가이드"}
+{"type":"adjustment_factor","category":"언어보정","categoryCode":"LANGUAGE_ADJUSTMENT","language":"JavaScript/TypeScript","factor":0.95,"description":"JavaScript/TypeScript 개발","year":2026,"source":"SW사업 대가산정 가이드"}

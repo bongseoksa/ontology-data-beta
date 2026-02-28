@@ -1,0 +1,4 @@
+{"type":"indirect_rate","category":"제경비","categoryCode":"OVERHEAD","minRate":110,"maxRate":120,"defaultRate":110,"baseOn":"직접인건비","formula":"직접인건비 × (제경비율/100)","year":2026,"source":"SW사업 대가산정 가이드","description":"사무실비, 복리후생비, 관리비 등 간접 경비"}
+{"type":"indirect_rate","category":"기술료","categoryCode":"TECHNICAL_FEE","minRate":20,"maxRate":40,"defaultRate":25,"baseOn":"직접인건비+제경비","formula":"(직접인건비 + 제경비) × (기술료율/100)","year":2026,"source":"SW사업 대가산정 가이드","description":"기술 개발 투자비, 이윤"}
+{"type":"indirect_rate","category":"일반관리비","categoryCode":"ADMIN_FEE","minRate":6,"maxRate":6,"defaultRate":6,"baseOn":"직접비","formula":"직접비 × 0.06","year":2026,"source":"기업회계기준","description":"본사 관리비용"}
+{"type":"indirect_rate","category":"이윤","categoryCode":"PROFIT","minRate":10,"maxRate":15,"defaultRate":10,"baseOn":"총원가","formula":"(직접인건비+제경비+기술료+직접경비) × (이윤율/100)","year":2026,"source":"민간 관행","description":"민간 사업 시 영업이윤"}

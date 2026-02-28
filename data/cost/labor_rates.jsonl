@@ -1,0 +1,5 @@
+{"type":"labor_rate","grade":"기술사","gradeCode":"TECH_EXPERT","monthlyRate":14000000,"dailyRate":636364,"hourlyRate":79545,"minExperience":20,"year":2026,"source":"KOSA","description":"기술사/특급기술자 (20년 이상)"}
+{"type":"labor_rate","grade":"특급","gradeCode":"EXPERT","monthlyRate":12000000,"dailyRate":545455,"hourlyRate":68182,"minExperience":12,"year":2026,"source":"KOSA","description":"특급기술자 (12년 이상)"}
+{"type":"labor_rate","grade":"고급","gradeCode":"SENIOR","monthlyRate":10000000,"dailyRate":454545,"hourlyRate":56818,"minExperience":7,"year":2026,"source":"KOSA","description":"고급기술자 (7~12년)"}
+{"type":"labor_rate","grade":"중급","gradeCode":"MID","monthlyRate":8000000,"dailyRate":363636,"hourlyRate":45455,"minExperience":3,"year":2026,"source":"KOSA","description":"중급기술자 (3~7년)"}
+{"type":"labor_rate","grade":"초급","gradeCode":"JUNIOR","monthlyRate":5500000,"dailyRate":250000,"hourlyRate":31250,"minExperience":0,"year":2026,"source":"KOSA","description":"초급기술자 (3년 미만)"}

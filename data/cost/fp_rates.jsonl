@@ -1,0 +1,3 @@
+{"type":"fp_rate","method":"기능점수","methodCode":"FP","unitName":"FP당 단가","unitCost":553000,"currency":"KRW","year":2026,"source":"SW사업 대가산정 가이드","description":"기능점수 1점당 평균 개발비"}
+{"type":"fp_rate","method":"간이법","methodCode":"FP_SIMPLE","unitName":"FP당 단가 (간이)","unitCost":519000,"currency":"KRW","year":2026,"source":"SW사업 대가산정 가이드","description":"간이법 기준 FP당 단가"}
+{"type":"fp_rate","method":"정통법","methodCode":"FP_FULL","unitName":"FP당 단가 (정통)","unitCost":553000,"currency":"KRW","year":2026,"source":"SW사업 대가산정 가이드","description":"정통법 기준 FP당 단가"}
