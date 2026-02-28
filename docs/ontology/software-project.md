@@ -546,5 +546,4 @@ Class: Dependency
 
 - **작성일**: 2026-02-27
 - **버전**: 1.0
-- **의존 문서**: domain.md, core_v2.md
-- **이전 버전 참조**: project.md (v1)
+- **의존 문서**: core.md, cost.md, pricing.md

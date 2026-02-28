@@ -1032,29 +1032,22 @@ Rule 5 - 세션 정원:
 
 ```
 Activity (Core)
-├── Project → SoftwareProject (extensions/software_project.md)
-├── Study → LearningStudy (extensions/study.md)
-├── Mentoring → CoachingMentoring (extensions/mentoring.md)
-└── Consulting → AdvisoryConsulting (extensions/consulting.md)
+└── Project → SoftwareProject (software-project.md)
 ```
+
+> MVP 범위: SW 프로젝트 확장만 포함
 
 ### 8.2 비용/가격 확장 (Domain Ontology)
 
 ```
 Cost (Core)
-└── ActivityCost (domain.md)
-    ├── ProjectCost
-    ├── StudyCost
-    ├── MentoringCost
-    └── ConsultingCost
+└── ProjectCost (cost.md)
 
-Revenue (Core)
-└── ActivityPricing (domain.md)
-    ├── ProjectPricing
-    ├── StudyPricing
-    ├── MentoringPricing
-    └── ConsultingPricing
+Pricing (Core)
+└── ProjectPricing (pricing.md)
 ```
+
+> MVP 범위: SW 프로젝트 비용/가격 산정에 집중
 
 ---
 
@@ -1148,10 +1141,8 @@ Revenue (Core)
 
 - **작성일**: 2026-02-27
 - **버전**: 2.0
-- **이전 버전**: core.md (v1)
-- **다음 문서**: domain.md (Domain Ontology 통합)
 - **관련 문서**:
-  - extensions/software_project.md
-  - extensions/study.md
-  - extensions/mentoring.md
-  - extensions/consulting.md
+  - software-project.md
+  - cost.md
+  - pricing.md
+  - data-requirements.md

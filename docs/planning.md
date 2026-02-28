@@ -21,11 +21,11 @@
 
 | 문서 | 경로 | 설명 |
 |------|------|------|
-| Core Ontology v2 | `docs/04_ontology/core_v2.md` | Activity 기반 범용 구조 |
-| Cost Ontology | `docs/04_ontology/cost.md` | 원가 산정 모델 |
-| Pricing Ontology | `docs/04_ontology/pricing.md` | 가격 산정 모델 |
-| SW Project Extension | `docs/04_ontology/extensions/software_project.md` | 소프트웨어 프로젝트 확장 |
-| 데이터 요구사항 | `docs/04_ontology/data_requirements.md` | 데이터 수집 가이드 |
+| Core Ontology v2 | `docs/ontology/core.md` | Activity 기반 범용 구조 |
+| Cost Ontology | `docs/ontology/cost.md` | 원가 산정 모델 |
+| Pricing Ontology | `docs/ontology/pricing.md` | 가격 산정 모델 |
+| SW Project Extension | `docs/ontology/software-project.md` | 소프트웨어 프로젝트 확장 |
+| 데이터 요구사항 | `docs/ontology/data-requirements.md` | 데이터 수집 가이드 |
 
 ---
 
@@ -550,5 +550,5 @@ classDiagram
 - **버전**: 1.0
 - **상태**: 구현 진행 중
 - **관련 문서**:
-  - `docs/04_ontology/core_v2.md`
-  - `docs/04_ontology/data_requirements.md`
+  - `docs/ontology/core.md`
+  - `docs/ontology/data-requirements.md`
