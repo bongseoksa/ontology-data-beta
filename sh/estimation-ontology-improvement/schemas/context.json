@@ -1,0 +1,56 @@
+{
+  "@context": {
+    "base": "https://example.org/ontology/base#",
+    "req": "https://example.org/ontology/requirements#",
+    "size": "https://example.org/ontology/size#",
+    "cost": "https://example.org/ontology/cost#",
+    "risk": "https://example.org/ontology/risk#",
+    "price": "https://example.org/ontology/pricing#",
+    "quote": "https://example.org/ontology/quote#",
+    "prov": "http://www.w3.org/ns/prov#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+
+    "id": "@id",
+    "type": "@type",
+
+    "quoteId": "quote:quoteId",
+    "versionNo": {
+      "@id": "quote:versionNo",
+      "@type": "xsd:integer"
+    },
+    "generatedAt": {
+      "@id": "quote:generatedAt",
+      "@type": "xsd:dateTime"
+    },
+
+    "min": {
+      "@id": "quote:min",
+      "@type": "xsd:decimal"
+    },
+    "p50": {
+      "@id": "quote:p50",
+      "@type": "xsd:decimal"
+    },
+    "p80": {
+      "@id": "quote:p80",
+      "@type": "xsd:decimal"
+    },
+    "max": {
+      "@id": "quote:max",
+      "@type": "xsd:decimal"
+    },
+
+    "derivedFromRequirementSet": {
+      "@id": "quote:derivedFromRequirementSet",
+      "@type": "@id"
+    },
+    "usesAssumption": {
+      "@id": "quote:usesAssumption",
+      "@type": "@id"
+    },
+    "wasDerivedFrom": {
+      "@id": "prov:wasDerivedFrom",
+      "@type": "@id"
+    }
+  }
+}

@@ -9,7 +9,8 @@ import json
 from dataclasses import dataclass, field
 from typing import Optional, List, Dict, Any
 from enum import Enum
-from datetime import datetime
+from datetime import datetime, timezone
+from pathlib import Path
 
 
 # =============================================================================
@@ -262,9 +263,9 @@ class Pricing:
             result["estimatedPrice"] = self.estimatedPrice.__dict__
         if self.winningPrice:
             result["winningPrice"] = self.winningPrice.__dict__
-        if self.winningRate:
+        if self.winningRate is not None:
             result["winningRate"] = self.winningRate
-        if self.competitorCount:
+        if self.competitorCount is not None:
             result["competitorCount"] = self.competitorCount
         if self.competitionLevel:
             result["competitionLevel"] = self.competitionLevel.value
@@ -274,7 +275,7 @@ class Pricing:
             result["winnerName"] = self.winnerName
         if self.bidDate:
             result["bidDate"] = self.bidDate
-        if self.impliedMargin:
+        if self.impliedMargin is not None:
             result["impliedMargin"] = self.impliedMargin
         if self.riskLevel:
             result["riskLevel"] = self.riskLevel.value
@@ -286,6 +287,119 @@ class Pricing:
         return result
 
     def to_jsonl(self) -> str:
+        return json.dumps(self.to_dict(), ensure_ascii=False)
+
+    def to_quote_version_jsonld(
+        self,
+        requirement_set_id: str,
+        evidence_urls: List[str],
+        version_no: int = 1,
+        assumptions: Optional[List[str]] = None,
+        context_uri: Optional[str] = None,
+        quote_id: Optional[str] = None,
+        estimate_range: Optional["EstimateRange"] = None,
+    ) -> Dict[str, Any]:
+        """Pricing 인스턴스를 견적 JSON-LD(QuoteVersion + EstimateRange)로 변환"""
+        graph = build_quote_version_graph_from_pricing(
+            pricing=self,
+            requirement_set_id=requirement_set_id,
+            evidence_urls=evidence_urls,
+            version_no=version_no,
+            assumptions=assumptions,
+            context_uri=context_uri,
+            quote_id=quote_id,
+            estimate_range=estimate_range,
+        )
+        return graph.to_dict()
+
+
+@dataclass
+class EstimateRange:
+    """견적 범위 결과"""
+    min: int
+    p50: int
+    p80: int
+    max: int
+    pointEstimate: Optional[int] = None
+
+    def __post_init__(self):
+        if self.pointEstimate is None:
+            self.pointEstimate = self.p50
+        if not (self.min <= self.p50 <= self.p80 <= self.max):
+            raise ValueError("Invalid estimate range ordering: min <= p50 <= p80 <= max")
+
+    def to_jsonld_node(self, node_id: str) -> Dict[str, Any]:
+        return {
+            "id": node_id,
+            "type": "quote:EstimateRange",
+            "min": self.min,
+            "p50": self.p50,
+            "p80": self.p80,
+            "max": self.max,
+            "quote:pointEstimate": self.pointEstimate,
+        }
+
+
+@dataclass
+class QuoteVersionGraph:
+    """JSON-LD 계약을 따르는 견적 버전 그래프"""
+    quoteId: str
+    versionNo: int
+    requirementSetId: str
+    estimateRange: EstimateRange
+    evidenceUrls: List[str]
+    assumptions: List[str] = field(default_factory=list)
+    generatedAt: Optional[str] = None
+    contextUri: Optional[str] = None
+
+    def __post_init__(self):
+        if not self.evidenceUrls:
+            raise ValueError("evidenceUrls must contain at least one source URL")
+        if self.generatedAt is None:
+            self.generatedAt = _utc_now_iso()
+        if self.contextUri is None:
+            self.contextUri = _default_jsonld_context_uri()
+
+    def _quote_node_id(self) -> str:
+        return _ensure_node_id(self.quoteId, "quote")
+
+    def _version_node_id(self) -> str:
+        return f"{self._quote_node_id()}-v{self.versionNo}"
+
+    def _range_node_id(self) -> str:
+        return f"{self._quote_node_id()}-range-v{self.versionNo}"
+
+    def to_dict(self) -> Dict[str, Any]:
+        version_node: Dict[str, Any] = {
+            "id": self._version_node_id(),
+            "type": "quote:QuoteVersion",
+            "versionNo": self.versionNo,
+            "generatedAt": self.generatedAt,
+            "derivedFromRequirementSet": _ensure_node_id(self.requirementSetId, "req"),
+            "wasDerivedFrom": self.evidenceUrls,
+            "quote:hasEstimateRange": self._range_node_id(),
+        }
+
+        if self.assumptions:
+            version_node["usesAssumption"] = [
+                _ensure_node_id(assumption, "base") for assumption in self.assumptions
+            ]
+
+        return {
+            "@context": self.contextUri,
+            "@graph": [
+                {
+                    "id": self._quote_node_id(),
+                    "type": "quote:Quote",
+                    "quoteId": self.quoteId,
+                    "quote:hasVersion": self._version_node_id(),
+                },
+                version_node,
+                self.estimateRange.to_jsonld_node(self._range_node_id()),
+            ],
+        }
+
+    def to_json(self) -> str:
         return json.dumps(self.to_dict(), ensure_ascii=False)
 
 
@@ -339,6 +453,93 @@ class CostReference:
 # =============================================================================
 # Mapping Functions
 # =============================================================================
+
+def _utc_now_iso() -> str:
+    """UTC now in ISO-8601 with Z suffix"""
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def _default_jsonld_context_uri() -> str:
+    """프로젝트 내 JSON-LD context 경로를 문자열 URI로 반환"""
+    project_root = Path(__file__).resolve().parents[2]
+    context_path = project_root / "sh" / "estimation-ontology-improvement" / "schemas" / "context.json"
+    return str(context_path)
+
+
+def _ensure_node_id(value: str, default_prefix: str) -> str:
+    """프리픽스가 없는 식별자에 기본 프리픽스를 부여"""
+    if value.startswith("http://") or value.startswith("https://"):
+        return value
+    if ":" in value:
+        return value
+    return f"{default_prefix}:{value}"
+
+
+def derive_estimate_range_from_pricing(pricing: Pricing) -> EstimateRange:
+    """Pricing 정보로 최소 범위 견적을 생성"""
+    candidates = []
+    if pricing.estimatedPrice:
+        candidates.append(pricing.estimatedPrice.amount)
+    if pricing.winningPrice:
+        candidates.append(pricing.winningPrice.amount)
+    if pricing.baseCost:
+        candidates.append(pricing.baseCost.amount)
+
+    if not candidates:
+        raise ValueError("Cannot derive estimate range: no pricing amount available")
+
+    base_value = candidates[0]
+
+    if len(candidates) == 1:
+        min_value = int(base_value * 0.90)
+        p50_value = base_value
+        p80_value = int(base_value * 1.10)
+        max_value = int(base_value * 1.20)
+    else:
+        low = min(candidates)
+        high = max(candidates)
+        min_value = int(low * 0.90)
+        p50_value = low
+        p80_value = high
+        max_value = int(high * 1.15)
+
+    return EstimateRange(
+        min=min_value,
+        p50=p50_value,
+        p80=p80_value,
+        max=max_value,
+        pointEstimate=p50_value,
+    )
+
+
+def build_quote_version_graph_from_pricing(
+    pricing: Pricing,
+    requirement_set_id: str,
+    evidence_urls: List[str],
+    version_no: int = 1,
+    assumptions: Optional[List[str]] = None,
+    context_uri: Optional[str] = None,
+    quote_id: Optional[str] = None,
+    estimate_range: Optional[EstimateRange] = None,
+) -> QuoteVersionGraph:
+    """Pricing에서 QuoteVersion JSON-LD 그래프를 생성"""
+    if estimate_range is None:
+        estimate_range = derive_estimate_range_from_pricing(pricing)
+
+    resolved_quote_id = quote_id if quote_id else pricing.bidId
+    if not resolved_quote_id:
+        raise ValueError("quote_id or pricing.bidId is required")
+
+    return QuoteVersionGraph(
+        quoteId=resolved_quote_id,
+        versionNo=version_no,
+        requirementSetId=requirement_set_id,
+        estimateRange=estimate_range,
+        evidenceUrls=evidence_urls,
+        assumptions=assumptions or [],
+        contextUri=context_uri,
+    )
+
 
 def map_g2b_project_to_ontology(raw_data: Dict[str, Any]) -> SoftwareProject:
     """나라장터 프로젝트 데이터를 온톨로지 구조로 변환"""
@@ -467,6 +668,12 @@ def save_jsonl(data: List[Any], filepath: str):
                 f.write(json.dumps(item, ensure_ascii=False) + '\n')
 
 
+def save_json(data: Dict[str, Any], filepath: str):
+    """JSON 파일 저장"""
+    with open(filepath, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+
 if __name__ == "__main__":
     # 테스트: 샘플 데이터 변환
     sample_project = {
@@ -500,3 +707,16 @@ if __name__ == "__main__":
     pricing = map_g2b_pricing_to_ontology(sample_pricing)
     print("Pricing JSONL:")
     print(pricing.to_jsonl())
+    print()
+
+    quote_jsonld = pricing.to_quote_version_jsonld(
+        requirement_set_id="REQSET-2026-0001",
+        evidence_urls=[
+            "https://www.sw.or.kr/site/sw/ex/board/View.do?cbIdx=276&bcIdx=63607",
+            "https://www.sw.or.kr/site/sw/ex/board/View.do?cbIdx=304&bcIdx=64717",
+        ],
+        version_no=1,
+        assumptions=["ASM-01"],
+    )
+    print("QuoteVersion JSON-LD:")
+    print(json.dumps(quote_jsonld, ensure_ascii=False, indent=2))

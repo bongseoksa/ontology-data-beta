@@ -1,0 +1,32 @@
+{
+  "@context": "../schemas/context.json",
+  "@graph": [
+    {
+      "id": "quote:Q-2026-001",
+      "type": "quote:Quote",
+      "quoteId": "Q-2026-001"
+    },
+    {
+      "id": "quote:Q-2026-001-v1",
+      "type": "quote:QuoteVersion",
+      "versionNo": 1,
+      "generatedAt": "2026-03-01T09:30:00Z",
+      "derivedFromRequirementSet": "req:REQSET-2026-0001",
+      "usesAssumption": [
+        "base:ASM-01"
+      ],
+      "wasDerivedFrom": [
+        "https://www.sw.or.kr/site/sw/ex/board/View.do?cbIdx=276&bcIdx=63607",
+        "https://www.sw.or.kr/site/sw/ex/board/View.do?cbIdx=304&bcIdx=64717"
+      ]
+    },
+    {
+      "id": "quote:RANGE-2026-001-v1",
+      "type": "quote:EstimateRange",
+      "min": 420000000,
+      "p50": 500000000,
+      "p80": 560000000,
+      "max": 650000000
+    }
+  ]
+}

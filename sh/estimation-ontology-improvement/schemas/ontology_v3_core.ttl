@@ -1,0 +1,113 @@
+@prefix base: <https://example.org/ontology/base#> .
+@prefix req:  <https://example.org/ontology/requirements#> .
+@prefix size: <https://example.org/ontology/size#> .
+@prefix cost: <https://example.org/ontology/cost#> .
+@prefix risk: <https://example.org/ontology/risk#> .
+@prefix price: <https://example.org/ontology/pricing#> .
+@prefix quote: <https://example.org/ontology/quote#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+### Classes
+base:Project a owl:Class ; rdfs:comment "견적 대상 프로젝트" .
+base:Assumption a owl:Class ; rdfs:comment "산정 가정" .
+base:Constraint a owl:Class ; rdfs:comment "산정 제약" .
+
+req:RequirementSet a owl:Class ; rdfs:subClassOf prov:Entity .
+req:Requirement a owl:Class .
+req:FunctionalRequirement a owl:Class ; rdfs:subClassOf req:Requirement .
+req:NonFunctionalRequirement a owl:Class ; rdfs:subClassOf req:Requirement .
+
+size:SizeEstimate a owl:Class .
+size:FunctionPointEstimate a owl:Class ; rdfs:subClassOf size:SizeEstimate .
+size:COSMICEstimate a owl:Class ; rdfs:subClassOf size:SizeEstimate .
+
+cost:CostEstimate a owl:Class .
+cost:LaborCost a owl:Class ; rdfs:subClassOf cost:CostEstimate .
+cost:RateCard a owl:Class ; rdfs:subClassOf prov:Entity .
+
+risk:RiskItem a owl:Class .
+risk:RiskScore a owl:Class .
+
+price:PricingPolicy a owl:Class .
+price:MarginPolicy a owl:Class ; rdfs:subClassOf price:PricingPolicy .
+
+quote:Quote a owl:Class .
+quote:QuoteVersion a owl:Class ; rdfs:subClassOf prov:Entity .
+quote:EstimateScenario a owl:Class .
+quote:EstimateRange a owl:Class .
+
+### Object Properties
+req:belongsToSet a owl:ObjectProperty ;
+  rdfs:domain req:Requirement ;
+  rdfs:range req:RequirementSet .
+
+req:drivesSize a owl:ObjectProperty ;
+  rdfs:domain req:Requirement ;
+  rdfs:range size:SizeEstimate .
+
+size:informsCost a owl:ObjectProperty ;
+  rdfs:domain size:SizeEstimate ;
+  rdfs:range cost:CostEstimate .
+
+price:pricedBy a owl:ObjectProperty ;
+  rdfs:domain cost:CostEstimate ;
+  rdfs:range price:PricingPolicy .
+
+risk:adjustsRange a owl:ObjectProperty ;
+  rdfs:domain risk:RiskScore ;
+  rdfs:range quote:EstimateRange .
+
+quote:hasVersion a owl:ObjectProperty ;
+  rdfs:domain quote:Quote ;
+  rdfs:range quote:QuoteVersion .
+
+quote:usesAssumption a owl:ObjectProperty ;
+  rdfs:domain quote:QuoteVersion ;
+  rdfs:range base:Assumption .
+
+quote:derivedFromRequirementSet a owl:ObjectProperty ;
+  rdfs:domain quote:QuoteVersion ;
+  rdfs:range req:RequirementSet .
+
+### Data Properties
+req:statement a owl:DatatypeProperty ;
+  rdfs:domain req:Requirement ;
+  rdfs:range xsd:string .
+
+req:testability a owl:DatatypeProperty ;
+  rdfs:domain req:Requirement ;
+  rdfs:range xsd:string .
+
+size:sizeValue a owl:DatatypeProperty ;
+  rdfs:domain size:SizeEstimate ;
+  rdfs:range xsd:decimal .
+
+cost:pointCost a owl:DatatypeProperty ;
+  rdfs:domain cost:CostEstimate ;
+  rdfs:range xsd:decimal .
+
+cost:rateYear a owl:DatatypeProperty ;
+  rdfs:domain cost:LaborCost ;
+  rdfs:range xsd:gYear .
+
+cost:rateSource a owl:DatatypeProperty ;
+  rdfs:domain cost:LaborCost ;
+  rdfs:range xsd:anyURI .
+
+quote:versionNo a owl:DatatypeProperty ;
+  rdfs:domain quote:QuoteVersion ;
+  rdfs:range xsd:integer .
+
+quote:generatedAt a owl:DatatypeProperty ;
+  rdfs:domain quote:QuoteVersion ;
+  rdfs:range xsd:dateTime .
+
+quote:min a owl:DatatypeProperty ; rdfs:domain quote:EstimateRange ; rdfs:range xsd:decimal .
+quote:p50 a owl:DatatypeProperty ; rdfs:domain quote:EstimateRange ; rdfs:range xsd:decimal .
+quote:p80 a owl:DatatypeProperty ; rdfs:domain quote:EstimateRange ; rdfs:range xsd:decimal .
+quote:max a owl:DatatypeProperty ; rdfs:domain quote:EstimateRange ; rdfs:range xsd:decimal .
+quote:pointEstimate a owl:DatatypeProperty ; rdfs:domain quote:EstimateRange ; rdfs:range xsd:decimal .
+

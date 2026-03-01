@@ -1,0 +1,85 @@
+@prefix base: <https://example.org/ontology/base#> .
+@prefix req:  <https://example.org/ontology/requirements#> .
+@prefix size: <https://example.org/ontology/size#> .
+@prefix cost: <https://example.org/ontology/cost#> .
+@prefix risk: <https://example.org/ontology/risk#> .
+@prefix price: <https://example.org/ontology/pricing#> .
+@prefix quote: <https://example.org/ontology/quote#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+base:Project a owl:Class .
+base:Assumption a owl:Class .
+base:Constraint a owl:Class .
+
+req:RequirementSet a owl:Class .
+req:Requirement a owl:Class .
+req:FunctionalRequirement a owl:Class ; rdfs:subClassOf req:Requirement .
+req:NonFunctionalRequirement a owl:Class ; rdfs:subClassOf req:Requirement .
+req:QualityAttribute a owl:Class .
+
+size:SizeEstimate a owl:Class .
+size:FunctionPointEstimate a owl:Class ; rdfs:subClassOf size:SizeEstimate .
+size:COSMICEstimate a owl:Class ; rdfs:subClassOf size:SizeEstimate .
+
+cost:CostEstimate a owl:Class .
+cost:LaborCost a owl:Class ; rdfs:subClassOf cost:CostEstimate .
+cost:RateCard a owl:Class .
+
+risk:RiskItem a owl:Class .
+risk:RiskScore a owl:Class .
+risk:UncertaintyDistribution a owl:Class .
+
+price:PricingPolicy a owl:Class .
+price:MarginPolicy a owl:Class ; rdfs:subClassOf price:PricingPolicy .
+
+quote:EstimateScenario a owl:Class .
+quote:Quote a owl:Class .
+quote:QuoteVersion a owl:Class .
+quote:EstimateRange a owl:Class .
+
+req:belongsToSet a owl:ObjectProperty ;
+  rdfs:domain req:Requirement ;
+  rdfs:range req:RequirementSet .
+
+req:drivesSize a owl:ObjectProperty ;
+  rdfs:domain req:Requirement ;
+  rdfs:range size:SizeEstimate .
+
+size:informsCost a owl:ObjectProperty ;
+  rdfs:domain size:SizeEstimate ;
+  rdfs:range cost:CostEstimate .
+
+price:pricedBy a owl:ObjectProperty ;
+  rdfs:domain cost:CostEstimate ;
+  rdfs:range price:PricingPolicy .
+
+risk:adjustsRange a owl:ObjectProperty ;
+  rdfs:domain risk:RiskScore ;
+  rdfs:range quote:EstimateRange .
+
+quote:hasVersion a owl:ObjectProperty ;
+  rdfs:domain quote:Quote ;
+  rdfs:range quote:QuoteVersion .
+
+quote:usesAssumption a owl:ObjectProperty ;
+  rdfs:domain quote:QuoteVersion ;
+  rdfs:range base:Assumption .
+
+quote:derivedFromRequirementSet a owl:ObjectProperty ;
+  rdfs:domain quote:QuoteVersion ;
+  rdfs:range req:RequirementSet .
+
+quote:pointEstimate a owl:DatatypeProperty ; rdfs:domain quote:EstimateRange .
+quote:p50 a owl:DatatypeProperty ; rdfs:domain quote:EstimateRange .
+quote:p80 a owl:DatatypeProperty ; rdfs:domain quote:EstimateRange .
+quote:min a owl:DatatypeProperty ; rdfs:domain quote:EstimateRange .
+quote:max a owl:DatatypeProperty ; rdfs:domain quote:EstimateRange .
+
+# Provenance hooks
+quote:QuoteVersion rdfs:subClassOf prov:Entity .
+req:RequirementSet rdfs:subClassOf prov:Entity .
+cost:RateCard rdfs:subClassOf prov:Entity .
+

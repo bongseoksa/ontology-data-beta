@@ -1,0 +1,78 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix req:  <https://example.org/ontology/requirements#> .
+@prefix cost: <https://example.org/ontology/cost#> .
+@prefix quote: <https://example.org/ontology/quote#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+quote:QuoteVersionShape a sh:NodeShape ;
+  sh:targetClass quote:QuoteVersion ;
+  sh:property [
+    sh:path quote:versionNo ;
+    sh:datatype xsd:integer ;
+    sh:minCount 1 ;
+  ] ;
+  sh:property [
+    sh:path quote:generatedAt ;
+    sh:datatype xsd:dateTime ;
+    sh:minCount 1 ;
+  ] ;
+  sh:property [
+    sh:path quote:derivedFromRequirementSet ;
+    sh:minCount 1 ;
+  ] ;
+  sh:property [
+    sh:path prov:wasDerivedFrom ;
+    sh:minCount 1 ;
+  ] .
+
+quote:EstimateRangeShape a sh:NodeShape ;
+  sh:targetClass quote:EstimateRange ;
+  sh:property [ sh:path quote:min ; sh:datatype xsd:decimal ; sh:minCount 1 ] ;
+  sh:property [ sh:path quote:p50 ; sh:datatype xsd:decimal ; sh:minCount 1 ] ;
+  sh:property [ sh:path quote:p80 ; sh:datatype xsd:decimal ; sh:minCount 1 ] ;
+  sh:property [ sh:path quote:max ; sh:datatype xsd:decimal ; sh:minCount 1 ] ;
+  sh:sparql [
+    sh:message "EstimateRange ordering violated: min <= p50 <= p80 <= max" ;
+    sh:select """
+      SELECT $this WHERE {
+        $this quote:min ?min ;
+              quote:p50 ?p50 ;
+              quote:p80 ?p80 ;
+              quote:max ?max .
+        FILTER (!(?min <= ?p50 && ?p50 <= ?p80 && ?p80 <= ?max))
+      }
+    """ ;
+  ] .
+
+cost:LaborCostShape a sh:NodeShape ;
+  sh:targetClass cost:LaborCost ;
+  sh:property [
+    sh:path cost:rateYear ;
+    sh:datatype xsd:gYear ;
+    sh:minCount 1 ;
+  ] ;
+  sh:property [
+    sh:path cost:rateSource ;
+    sh:datatype xsd:anyURI ;
+    sh:minCount 1 ;
+  ] ;
+  sh:property [
+    sh:path cost:pointCost ;
+    sh:datatype xsd:decimal ;
+    sh:minCount 1 ;
+  ] .
+
+req:RequirementShape a sh:NodeShape ;
+  sh:targetClass req:Requirement ;
+  sh:property [
+    sh:path req:statement ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+  ] ;
+  sh:property [
+    sh:path req:testability ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+  ] .
+
